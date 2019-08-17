@@ -29,13 +29,11 @@ jobs:
       run: |
         docker version
         docker info
-        ls -lhatr ~/.docker/cli-plugins/ \
-          /usr/libexec/docker/ \
-          /usr/libexec/docker/cli-plugins/
-        curl https://github.com/docker/buildx/releases/download/$"BUILDX_VER"/buildx-$"BUILDX_VER".linux-amd64 -O /usr/libexec/docker/cli-plugins/buildx
-        chmod a+x /usr/libexec/docker/cli-plugins/buildx
-        /usr/libexec/docker/cli-plugins/buildx version
-        /usr/libexec/docker/cli-plugins/buildx ls
+        mkdir -p ~/.docker/cli-plugins/
+        curl https://github.com/docker/buildx/releases/download/$"BUILDX_VER"/buildx-$"BUILDX_VER".linux-amd64 -O ~/.docker/cli-plugins/docker-buildx
+        chmod a+x ~/.docker/cli-plugins/docker-buildx
+        ~/.docker/cli-plugins/docker-buildx version
+        ~/.docker/cli-plugins/docker-buildx ls
 
 
     # - name: checkout
