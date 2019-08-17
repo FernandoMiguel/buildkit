@@ -6,17 +6,17 @@ on:
     - build/*
 
 jobs:
-  build-docker-compose:
-    name: build with docker-compose
-    runs-on: ubuntu-latest
+  # build-docker-compose:
+  #   name: build with docker-compose
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: checkout
-      uses: actions/checkout@v1
+  #   steps:
+  #   - name: checkout
+  #     uses: actions/checkout@v1
 
-    - name: docker-compose build
-      run: |
-        docker-compose build
+  #   - name: docker-compose build
+  #     run: |
+  #       docker-compose build
 
   build-buildx:
     name: build with buildx bake
@@ -35,8 +35,8 @@ jobs:
         /usr/libexec/docker/cli-plugins/buildx ls
 
 
-    - name: checkout
-      uses: actions/checkout@v1
+    # - name: checkout
+    #   uses: actions/checkout@v1
 
     # - name: buildx bake
     #   env:
