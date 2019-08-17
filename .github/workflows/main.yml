@@ -27,13 +27,15 @@ jobs:
       env:
         BUILDX_VER: v0.3.0
       run: |
-        docker version
-        docker info
+        # docker version
+        # docker info
+        export PATH=~/.docker/cli-plugins/:$PATH
         mkdir -p ~/.docker/cli-plugins/
         curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
-        ~/.docker/cli-plugins/docker-buildx version
-        ~/.docker/cli-plugins/docker-buildx ls
+        docker-buildx version
+        docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'
+        docker-buildx ls
 
 
     # - name: checkout
