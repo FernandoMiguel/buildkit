@@ -11,8 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: build docker-compose
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: list
       run: |
+        pwd
+        ls -lahtr
+
+    - name: checkout
+      uses: actions/checkout@v1
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: build docker-compose
+      run: |
+        pwd
+        ls -lahtr
         docker-compose build
