@@ -26,6 +26,7 @@ jobs:
     - name: buildx dependencies
       env:
         BUILDX_VER: v0.3.0
+        PREFER_BUILDCTL: 1
       run: |
         docker version
         docker info
@@ -34,7 +35,7 @@ jobs:
         curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
-        docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false --load'
+        docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false --output=type=docker'
 
     - name: checkout
       uses: actions/checkout@v1
