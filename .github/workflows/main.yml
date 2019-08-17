@@ -27,24 +27,23 @@ jobs:
       env:
         BUILDX_VER: v0.3.0
       run: |
-        # docker version
-        # docker info
+        docker version
+        docker info
         export PATH=~/.docker/cli-plugins/:$PATH
         mkdir -p ~/.docker/cli-plugins/
         curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
+        docker buildx version
         docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'
-        docker-buildx ls
 
+    - name: checkout
+      uses: actions/checkout@v1
 
-    # - name: checkout
-    #   uses: actions/checkout@v1
-
-    # - name: buildx bake
-    #   env:
-    #     DOCKER_CLI_EXPERIMENTAL=enabled
-    #     DOCKER_BUILDKIT=1
-    #   run: |
-    #     /usr/libexec/docker/cli-plugins/docker-buildx config -f docker-compose.yml -f buildx.yml
-    #     /usr/libexec/docker/cli-plugins/docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
+    - name: buildx bake
+      env:
+        DOCKER_CLI_EXPERIMENTAL=enabled
+        DOCKER_BUILDKIT=1
+      run: |
+        docker-compose -f docker-compose.yml -f buildx.yml config
+        docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
