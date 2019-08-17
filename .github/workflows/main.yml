@@ -34,7 +34,6 @@ jobs:
         curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
-        docker buildx version
         docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'
 
     - name: checkout
