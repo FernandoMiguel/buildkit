@@ -4,3 +4,9 @@ services:
   php73:
     build:
       dockerfile: buildx-7.3
+
+  nginx-base:
+    image: nginx-base:release-${GITHUB_SHA}-${INVOCATION_ID}
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
