@@ -29,8 +29,11 @@ jobs:
       run: |
         docker version
         docker info
-        curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > /usr/local/bin/docker-buildx
-        chmod a+x /usr/local/bin/docker-buildx
+        echo $PATH
+        export PATH=~/.docker/cli-plugins/:$PATH
+        mkdir -p ~/.docker/cli-plugins/
+        curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
+        chmod a+x ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
         docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'
 
@@ -42,5 +45,6 @@ jobs:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
       run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
         docker-compose -f docker-compose.yml -f buildx.yml config
         docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
