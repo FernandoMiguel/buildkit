@@ -16,7 +16,9 @@ jobs:
 
     - name: docker-compose build
       run: |
+        docker-compose config
         docker-compose build
+        docker images
 
   build-buildx:
     name: build with buildx bake
@@ -47,6 +49,7 @@ jobs:
       run: |
         export PATH=~/.docker/cli-plugins/:$PATH
         docker-compose -f docker-compose.yml -f buildx.yml config
+        docker-buildx -f docker-compose.yml -f buildx.yml --print
         # docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
         docker-buildx bake -f docker-compose.yml -f buildx.yml
         docker images
