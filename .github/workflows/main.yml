@@ -30,8 +30,7 @@ jobs:
         docker version
         docker info
         mkdir -p ~/.docker/cli-plugins/
-        echo "curl --silent --output ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/$"BUILDX_VER"/buildx-$"BUILDX_VER".linux-amd64"
-        curl --silent --output ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64
+        curl --silent https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
         ~/.docker/cli-plugins/docker-buildx version
         ~/.docker/cli-plugins/docker-buildx ls
