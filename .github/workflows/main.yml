@@ -25,10 +25,13 @@ jobs:
     steps:
     - name: buildx dependencies
       env:
-        BUILDX_VER=v0.3.0
+        BUILDX_VER: v0.3.0
       run: |
         docker version
         docker info
+        ls -lhatr ~/.docker/cli-plugins/ \
+          /usr/libexec/docker/ \
+          /usr/libexec/docker/cli-plugins/
         curl https://github.com/docker/buildx/releases/download/$"BUILDX_VER"/buildx-$"BUILDX_VER".linux-amd64 -O /usr/libexec/docker/cli-plugins/buildx
         chmod a+x /usr/libexec/docker/cli-plugins/buildx
         /usr/libexec/docker/cli-plugins/buildx version
