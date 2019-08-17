@@ -29,13 +29,12 @@ jobs:
       run: |
         docker version
         docker info
-        echo $PATH
         export PATH=~/.docker/cli-plugins/:$PATH
         mkdir -p ~/.docker/cli-plugins/
         curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
         chmod a+x ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
-        docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'
+        docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false --load'
 
     - name: checkout
       uses: actions/checkout@v1
@@ -47,7 +46,6 @@ jobs:
       run: |
         export PATH=~/.docker/cli-plugins/:$PATH
         docker-compose -f docker-compose.yml -f buildx.yml config
-        docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
+        # docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
         docker-buildx bake -f docker-compose.yml -f buildx.yml
         docker images
-        docker system df -v
