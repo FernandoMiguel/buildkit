@@ -42,8 +42,8 @@ jobs:
 
     - name: buildx bake
       env:
-        DOCKER_CLI_EXPERIMENTAL=enabled
-        DOCKER_BUILDKIT=1
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
       run: |
         docker-compose -f docker-compose.yml -f buildx.yml config
         docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
