@@ -24,16 +24,24 @@ jobs:
 
     steps:
     - name: buildx dependencies
+      env:
+        BUILDX_VER=v0.3.0
       run: |
         docker version
         docker info
-        ls -lahtr /usr/libexec/docker/cli-plugins/
+        curl https://github.com/docker/buildx/releases/download/$"BUILDX_VER"/buildx-$"BUILDX_VER".linux-amd64 -O /usr/libexec/docker/cli-plugins/buildx
+        chmod a+x /usr/libexec/docker/cli-plugins/buildx
+        /usr/libexec/docker/cli-plugins/buildx version
+        /usr/libexec/docker/cli-plugins/buildx ls
 
 
     - name: checkout
       uses: actions/checkout@v1
 
     # - name: buildx bake
+    #   env:
+    #     DOCKER_CLI_EXPERIMENTAL=enabled
+    #     DOCKER_BUILDKIT=1
     #   run: |
     #     /usr/libexec/docker/cli-plugins/docker-buildx config -f docker-compose.yml -f buildx.yml
     #     /usr/libexec/docker/cli-plugins/docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
