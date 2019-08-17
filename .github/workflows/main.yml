@@ -48,3 +48,6 @@ jobs:
         export PATH=~/.docker/cli-plugins/:$PATH
         docker-compose -f docker-compose.yml -f buildx.yml config
         docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
+        docker-buildx bake -f docker-compose.yml -f buildx.yml
+        docker images
+        docker system df -v
