@@ -16,12 +16,7 @@ jobs:
     - name: compose dependencies
       run: |
         docker-compose version
-        pip3 install \
-          wheel \
-          docker-compose
-        docker-compose version
 
-    steps:
     - name: checkout
       uses: actions/checkout@v1
 
