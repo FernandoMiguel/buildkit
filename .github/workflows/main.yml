@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - build/*
-  pull_request:
-  - opened
+  # pull_request:
+  # - opened
 
 jobs:
   build-docker-compose:
