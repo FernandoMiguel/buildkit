@@ -23,7 +23,8 @@ jobs:
         export PATH=~/.docker/cli-plugins/:$PATH
         git clone -b group-merge --single-branch https://github.com/tonistiigi/buildx.git
         cd buildx
-        docker build --platform=local -o .
+        make install
+        # docker build --platform=local -o .
         mv buildx ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
 
