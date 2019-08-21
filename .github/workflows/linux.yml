@@ -1,0 +1,46 @@
+name: build packages
+
+on:
+  push:
+    branches:
+    - linux/*
+
+jobs:
+  makeinstall:
+    name: make install
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: makeinstall
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        PREFER_BUILDCTL: 1
+      run: |
+        docker version
+        docker info
+        mkdir -p ~/.docker/cli-plugins/
+        export PATH=~/.docker/cli-plugins/:$PATH
+        git clone git://github.com/docker/buildx && cd buildx
+        make install
+        ls -lahtr
+        ./buildx version
+
+  dockerbuild:
+    name: docker build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: dockerbuild
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        PREFER_BUILDCTL: 1
+      run: |
+        docker version
+        docker info
+        mkdir -p ~/.docker/cli-plugins/
+        export PATH=~/.docker/cli-plugins/:$PATH
+        docker build --platform=local -o . git://github.com/docker/buildx
+        ls -lahtr
+        ./buildx version
