@@ -13,6 +13,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: compose dependencies
+      run: |
+        docker-compose version
+        pip3 install \
+          wheel \
+          docker-compose
+        docker-compose version
+
+    steps:
     - name: checkout
       uses: actions/checkout@v1
 
@@ -21,7 +30,8 @@ jobs:
         LLB: docker-build
       run: |
         docker-compose config
-        docker-compose build --parallel
+        # docker-compose build --parallel
+        docker-compose build
         docker images
 
   build-buildx:
