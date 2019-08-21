@@ -1,4 +1,4 @@
-name: build packages
+name: test merge
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         docker info
         mkdir -p ~/.docker/cli-plugins/
         export PATH=~/.docker/cli-plugins/:$PATH
-        docker build --platform=local -o . git://github.com/docker/buildx
+        docker build --platform=local -o . -b group-merge git://github.com/tonistiigi/buildx
         mv buildx ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
 
