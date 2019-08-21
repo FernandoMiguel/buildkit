@@ -5,6 +5,6 @@ services:
     build:
       dockerfile: buildx-7.3
 
-  nginx-base:
+  nodeapp:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-node-buildkit
