@@ -38,7 +38,9 @@ jobs:
           docker rmi -f $iid
           rm -f $iidfile
 
-        mv buildx ~/.docker/cli-plugins/docker-buildx
+        ls -lahtr
+        ls -lahtr bin
+        mv bin/buildx ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
 
     - name: checkout
