@@ -21,7 +21,7 @@ jobs:
         LLB: docker-build
       run: |
         docker-compose config
-        docker-compose build
+        docker-compose build --parallel
         docker images
 
   build-buildx:
