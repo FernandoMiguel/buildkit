@@ -1,6 +1,7 @@
 ARG AWS_ECR_ACCOUNT=0123456789
+ARG PHP_BASE_IMAGE
 
-FROM ${AWS_ECR_ACCOUNT}.dkr.ecr.eu-west-1.amazonaws.com/php:php73 AS php73-xdebug
+FROM ${PHP_BASE_IMAGE} AS php73-xdebug
 
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 RUN apk add --no-cache \

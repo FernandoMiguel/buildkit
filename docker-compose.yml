@@ -14,6 +14,8 @@ services:
     build:
       context: ./php
       dockerfile: Dockerfile-7.3-xdebug
+      args:
+        - PHP_BASE_IMAGE=php:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
   nginx-base:
     image: nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
