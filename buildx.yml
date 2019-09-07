@@ -5,11 +5,10 @@ services:
     build:
       dockerfile: buildx-7.3
 
-  ### temporary until https://github.com/docker/buildx/pull/134 is deployed
-  nginx-base:
+  php73-xdebug:
     build:
-      dockerfile: Dockerfile
+      dockerfile: buildx-7.3-xdebug
 
   nodeapp:
     build:
-      dockerfile: Dockerfile-node-buildkit
+      dockerfile: buildx-node
