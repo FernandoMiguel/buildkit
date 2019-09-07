@@ -5,10 +5,6 @@ services:
     build:
       dockerfile: buildx-7.3
 
-  php73-xdebug:
-    build:
-      dockerfile: buildx-7.3-xdebug
-
   nodeapp:
     build:
       dockerfile: buildx-node

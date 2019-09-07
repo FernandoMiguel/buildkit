@@ -6,16 +6,6 @@ services:
     build:
       context: ./php
       dockerfile: Dockerfile-7.3
-      args:
-        - AWS_ECR_ACCOUNT=${AWS_ECR_ACCOUNT:-0123456789}
-
-  php73-xdebug:
-    image: php-xdebug:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
-    build:
-      context: ./php
-      dockerfile: Dockerfile-7.3-xdebug
-      args:
-        - PHP_BASE_IMAGE=php:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
   nginx-base:
     image: nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
