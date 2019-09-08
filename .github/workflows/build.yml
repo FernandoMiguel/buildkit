@@ -61,10 +61,14 @@ jobs:
     - name: docker-compose printenv
       env:
         LLB: docker-build
-        INVOCATION_ID_0: INVOCATION_ID
-        INVOCATION_ID_1: $INVOCATION_ID
-        INVOCATION_ID_2: ${INVOCATION_ID}
-        INVOCATION_ID_3: $(INVOCATION_ID)
+        INVOCATION_ID_0: GITHUB_INVOCATION_ID
+        INVOCATION_ID_1: $GITHUB_INVOCATION_ID
+        INVOCATION_ID_2: ${GITHUB_INVOCATION_ID}
+        INVOCATION_ID_3: $(GITHUB_INVOCATION_ID)
+        INVOCATION_ID_h0: HOSTNAME
+        INVOCATION_ID_h1: $HOSTNAME
+        INVOCATION_ID_h2: ${HOSTNAME}
+        INVOCATION_ID_h3: $(HOSTNAME)
       uses: docker://docker/compose:1.25.0-rc2
       with:
         args: printenv
