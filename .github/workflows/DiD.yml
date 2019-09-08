@@ -54,8 +54,8 @@ jobs:
     name: build with buildx bake
     runs-on: ubuntu-latest
     container: moby/buildkit:master
-      ports:
-        - 1234
+      # ports:
+      #   - 1234
       env:
         BUILDKITD_FLAGS=--oci-worker-gc=false
       options: --privileged
