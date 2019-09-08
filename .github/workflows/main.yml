@@ -60,8 +60,10 @@ jobs:
           docker build --platform=local -o . git://github.com/docker/buildx
           mv buildx ~/.docker/cli-plugins/docker-buildx
         docker-buildx version
-        # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false' ## disable GC
+        # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
+        docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master,output=type=docker  ##  load the single-platform build result to docker images
+        docker-buildx ls
 
     - name: checkout
       uses: actions/checkout@v1 # --quiet
