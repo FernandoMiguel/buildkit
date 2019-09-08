@@ -58,18 +58,31 @@ jobs:
     - name: printenv
       run: printenv
 
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+    - name: Dump job context
+      env:
+        JOB_CONTEXT: ${{ toJson(job) }}
+      run: echo "$JOB_CONTEXT"
+    - name: Dump steps context
+      env:
+        STEPS_CONTEXT: ${{ toJson(steps) }}
+      run: echo "$STEPS_CONTEXT"
+    - name: Dump runner context
+      env:
+        RUNNER_CONTEXT: ${{ toJson(runner) }}
+      run: echo "$RUNNER_CONTEXT"
+    - name: Dump strategy context
+      env:
+        STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+      run: echo "$STRATEGY_CONTEXT"
+
     - name: docker-compose printenv
       env:
-        LLB: docker-build
-        INVOCATION_ID_0: GITHUB_INVOCATION_ID
-        INVOCATION_ID_1: $GITHUB_INVOCATION_ID
-        INVOCATION_ID_2: ${GITHUB_INVOCATION_ID}
-        INVOCATION_ID_3: $(GITHUB_INVOCATION_ID)
-        INVOCATION_ID_h0: HOSTNAME
-        INVOCATION_ID_h1: $HOSTNAME
-        INVOCATION_ID_h2: ${HOSTNAME}
-        INVOCATION_ID_h3: $(HOSTNAME)
-      uses: docker://docker/compose:1.25.0-rc2
+        INVOCATION_ID_0: ${{ GITHUB_INVOCATION_ID }}
+      uses: docker://busybox
       with:
         args: printenv
 
