@@ -52,7 +52,7 @@ jobs:
 
   build-buildx:
     name: build with buildx bake
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
     container: moby/buildkit:master
       # ports:
       #   - 1234
