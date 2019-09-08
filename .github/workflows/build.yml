@@ -81,7 +81,7 @@ jobs:
 
     - name: docker-compose printenv
       env:
-        INVOCATION_ID_0: ${{ GITHUB_INVOCATION_ID }}
+        INVOCATION_ID_0: ${{ echo $INVOCATION_ID }}
       uses: docker://busybox
       with:
         args: printenv
