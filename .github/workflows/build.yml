@@ -44,7 +44,7 @@ jobs:
     name: Build with docker-compose image
     runs-on: ubuntu-latest
 
-    # steps:
+    steps:
     # - name: docker version
     #   uses: docker://docker/compose:1.25.0-rc2
     #   with:
