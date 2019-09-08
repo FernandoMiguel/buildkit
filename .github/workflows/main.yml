@@ -66,7 +66,7 @@ jobs:
 
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
-        docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
+        # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-gc=false --load --cache-to=type=local,dest=~/dockercache'  ##  export docker layers cache
         docker-buildx ls
 
@@ -96,5 +96,5 @@ jobs:
         echo "Show tagged images"
         docker images
 
-        echo "Show Docker layer cache"
-        ls -lahtr ~/dockercache/
+        # echo "Show Docker layer cache"
+        # ls -lahtr ~/dockercache/
