@@ -69,14 +69,7 @@ jobs:
         args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
 
     - name: buildkit start
-      env:
-        BUILDKITD_FLAGS=--oci-worker-gc=false
-      uses: docker://moby/buildkit:master
-      # with:
-      #   args: -d
-      options: --privileged
-      ports:
-        - 1234
+      run: docker run -d --privileged -p 1234:1234 moby/buildkit:master --addr tcp://0.0.0.0:1234
 
     - name: docker ps
       run: |
