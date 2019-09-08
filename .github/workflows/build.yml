@@ -39,6 +39,50 @@ jobs:
         echo "Show tagged images"
         docker images
 
+
+  build-docker-compose-DinD:
+    name: build with docker-compose DinD
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: docker version
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker version
+
+    - name: checkout
+      uses: actions/checkout@v1 # --quiet
+      with:
+        fetch-depth: 1
+
+    - name: docker-compose config
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: dunnowhattoputhere
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
+
+    - name: Building images
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: dunnowhattoputhere
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose build --parallel
+
+    - name: Building images that depend on the previous stage
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: dunnowhattoputhere
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose -f docker-compose.stage-2.yml build --parallel
+
+    - name: Show tagged images
+      run: docker images
+
+
   build-buildx:
     name: build with buildx bake
     runs-on: ubuntu-latest
@@ -58,13 +102,11 @@ jobs:
           ~/dockercache
         export PATH=~/.docker/cli-plugins/:$PATH
         ### install binaries
-          # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-          # chmod a+x ~/.docker/cli-plugins/docker-buildx
+          curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
+          chmod a+x ~/.docker/cli-plugins/docker-buildx
         ### build from source
-          docker build --platform=local -o . git://github.com/docker/buildx
-          mv buildx ~/.docker/cli-plugins/docker-buildx
-
-        docker-buildx version
+        #   docker build --platform=local -o . git://github.com/docker/buildx
+        #   mv buildx ~/.docker/cli-plugins/docker-buildx
 
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
