@@ -102,11 +102,11 @@ jobs:
           ~/dockercache
         export PATH=~/.docker/cli-plugins/:$PATH
         ### install binaries
-          curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-          chmod a+x ~/.docker/cli-plugins/docker-buildx
+          # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
+          # chmod a+x ~/.docker/cli-plugins/docker-buildx
         ### build from source
-        #   docker build --platform=local -o . git://github.com/docker/buildx
-        #   mv buildx ~/.docker/cli-plugins/docker-buildx
+          docker build --platform=local -o . git://github.com/docker/buildx
+          mv -v buildx ~/.docker/cli-plugins/docker-buildx
 
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
