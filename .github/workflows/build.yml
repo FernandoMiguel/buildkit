@@ -55,10 +55,16 @@ jobs:
     #   with:
     #     fetch-depth: 1
 
+    - name: printenv
+      run: printenv
+
     - name: docker-compose printenv
       env:
         LLB: docker-build
-        EISTO: DEU
+        INVOCATION_ID_0: INVOCATION_ID
+        INVOCATION_ID_1: $INVOCATION_ID
+        INVOCATION_ID_2: ${INVOCATION_ID}
+        INVOCATION_ID_3: $(INVOCATION_ID)
       uses: docker://docker/compose:1.25.0-rc2
       with:
         args: printenv
