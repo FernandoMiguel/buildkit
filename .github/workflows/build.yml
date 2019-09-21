@@ -115,6 +115,7 @@ jobs:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
       run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
