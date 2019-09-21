@@ -99,13 +99,13 @@ jobs:
         export PATH=~/.docker/cli-plugins/:$PATH
         ### install binaries
           # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-          # chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
+          # chmod -v a+x ~/.docker/cli-plugins/docker-buildx
         ## binaries built from master
           cd ~/.docker/cli-plugins/
           curl --silent --location ${BUILDC_URL} > gh-buildx.zip
           unzip -j gh-buildx.zip
           mv -v buildx* docker-buildx
-          chmod -vv a+x docker-buildx
+          chmod -v a+x docker-buildx
         ### build from source
           # docker build --platform=local -o . git://github.com/docker/buildx
           # mv -v buildx ~/.docker/cli-plugins/docker-buildx
@@ -141,10 +141,10 @@ jobs:
 
         echo "Building images"
         # docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
-        docker-buildx bake --set target.cache-to=type=inline -f docker-compose.yml -f buildx.yml
+        docker-buildx bake --set target.cache-to=inline -f docker-compose.yml -f buildx.yml
 
         echo "Building images that depend on the previous stage"
-        docker-buildx bake --set target.cache-to=type=inline  -f docker-compose.stage-2.yml -f buildx.stage-2.yml
+        docker-buildx bake --set target.cache-to=inline  -f docker-compose.stage-2.yml -f buildx.stage-2.yml
 
         echo "Show tagged images"
         docker images
