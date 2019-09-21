@@ -101,7 +101,9 @@ jobs:
           # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
           # chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
         ## binaries built from master
-          curl --silent -L ${BUILDC_URL} | tar -xf - -C ~/.docker/cli-plugins/docker-buildx
+          curl --silent --location ${BUILDC_URL} > ~/.docker/cli-plugins/gh-buildx.zip
+          unzip -j ~/.docker/cli-plugins/gh-buildx.zip
+          mv -v ~/.docker/cli-plugins/buildx* ~/.docker/cli-plugins/docker-buildx
           chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
         ### build from source
           # docker build --platform=local -o . git://github.com/docker/buildx
@@ -111,7 +113,6 @@ jobs:
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
-        PREFER_BUILDCTL: 1
       run: |
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
