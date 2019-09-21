@@ -87,7 +87,7 @@ jobs:
     - name: install buildx
       env:
         BUILDX_VER: v0.3.0
-        BUILDC_URL: https://github.com/FernandoMiguel/buildx/suites/233644391/artifacts/46278
+        BUILDC_URL: https://github.com/FernandoMiguel/buildx/suites/233680061/artifacts/46356
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
       run: |
@@ -137,14 +137,13 @@ jobs:
 
         echo "Show images to be built"
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
-        docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml --print
+        docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
 
         echo "Building images"
-        # docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
-        docker-buildx bake --set target.cache-to=inline -f docker-compose.yml -f buildx.yml
+        docker-buildx bake -f docker-compose.yml -f buildx.hcl
 
         echo "Building images that depend on the previous stage"
-        docker-buildx bake --set target.cache-to=inline  -f docker-compose.stage-2.yml -f buildx.stage-2.yml
+        docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.hcl
 
         echo "Show tagged images"
         docker images
