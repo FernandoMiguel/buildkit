@@ -8,9 +8,9 @@ target "cache" {
 
 target "php73" {
 	inherits = ["cache"]
-	dockerfile = "buildx-7.3"
 }
 
 target "nginx-base" {
 	inherits = ["cache"]
 }
+

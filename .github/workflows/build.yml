@@ -127,7 +127,7 @@ jobs:
       with:
         fetch-depth: 1
 
-    - name: buildx bake
+    - name: buildx bake print
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
@@ -137,13 +137,20 @@ jobs:
 
         echo "Show images to be built"
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
-        docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
+        docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
 
+    - name: buildx bake
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
         echo "Building images"
-        docker-buildx bake -f docker-compose.yml -f buildx.hcl
+        docker-buildx bake -f docker-compose.yml -f buildx.yml -f buildx.hcl
 
         echo "Building images that depend on the previous stage"
-        docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.hcl
+        docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml -f buildx.stage-2.hcl
 
         echo "Show tagged images"
         docker images
