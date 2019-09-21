@@ -1,11 +1,6 @@
 name: Build Docker images
 
-on:
-  push:
-    branches:
-    - build/*
-  # pull_request:
-  # - opened
+on: [push, pull_request]
 
 jobs:
   # build-docker-compose:
@@ -40,47 +35,47 @@ jobs:
   #       docker images
 
 
-  build-docker-compose-image:
-    name: Build with docker-compose image
-    runs-on: ubuntu-latest
+  # build-docker-compose-image:
+  #   name: Build with docker-compose image
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: docker version
-      uses: docker://docker/compose:1.25.0-rc2
-      with:
-        args: docker version
+  #   steps:
+  #   - name: docker version
+  #     uses: docker://docker/compose:1.25.0-rc2
+  #     with:
+  #       args: docker version
 
-    - name: checkout
-      uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+  #   - name: checkout
+  #     uses: actions/checkout@v1
+  #     with:
+  #       fetch-depth: 1
 
-    - name: docker-compose config
-      env:
-        LLB: docker-build
-        # INVOCATION_ID: dunnowhattoputhere
-      uses: docker://docker/compose:1.25.0-rc2
-      with:
-        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
+  #   - name: docker-compose config
+  #     env:
+  #       LLB: docker-build
+  #       # INVOCATION_ID: dunnowhattoputhere
+  #     uses: docker://docker/compose:1.25.0-rc2
+  #     with:
+  #       args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
 
-    - name: Building images
-      env:
-        LLB: docker-build
-        # INVOCATION_ID: dunnowhattoputhere
-      uses: docker://docker/compose:1.25.0-rc2
-      with:
-        args: docker-compose build --parallel
+  #   - name: Building images
+  #     env:
+  #       LLB: docker-build
+  #       # INVOCATION_ID: dunnowhattoputhere
+  #     uses: docker://docker/compose:1.25.0-rc2
+  #     with:
+  #       args: docker-compose build --parallel
 
-    - name: Building images that depend on the previous stage
-      env:
-        LLB: docker-build
-        # INVOCATION_ID: dunnowhattoputhere
-      uses: docker://docker/compose:1.25.0-rc2
-      with:
-        args: docker-compose -f docker-compose.stage-2.yml build --parallel
+  #   - name: Building images that depend on the previous stage
+  #     env:
+  #       LLB: docker-build
+  #       # INVOCATION_ID: dunnowhattoputhere
+  #     uses: docker://docker/compose:1.25.0-rc2
+  #     with:
+  #       args: docker-compose -f docker-compose.stage-2.yml build --parallel
 
-    - name: Show tagged images
-      run: docker images
+  #   - name: Show tagged images
+  #     run: docker images
 
 
   build-buildx:
@@ -88,12 +83,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: buildx dependencies
+
+    - name: install buildx
       env:
         BUILDX_VER: v0.3.0
+        BUILDC_URL: https://github.com/FernandoMiguel/buildx/suites/233644391/artifacts/46278
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
-        PREFER_BUILDCTL: 1
       run: |
         docker version
         docker info
@@ -103,11 +99,20 @@ jobs:
         export PATH=~/.docker/cli-plugins/:$PATH
         ### install binaries
           # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-          # chmod a+x ~/.docker/cli-plugins/docker-buildx
+          # chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
+        ## binaries built from master
+          curl --silent -L ${BUILDC_URL} | tar -xf - -C ~/.docker/cli-plugins/docker-buildx
+          chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
         ### build from source
-          docker build --platform=local -o . git://github.com/docker/buildx
-          mv -v buildx ~/.docker/cli-plugins/docker-buildx
+          # docker build --platform=local -o . git://github.com/docker/buildx
+          # mv -v buildx ~/.docker/cli-plugins/docker-buildx
 
+    - name: create docker-container
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        PREFER_BUILDCTL: 1
+      run: |
         # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
         # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
@@ -122,7 +127,6 @@ jobs:
     - name: buildx bake
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
-        PREFER_BUILDCTL: 1
         DOCKER_BUILDKIT: 1
         LLB: buildkit
       run: |
@@ -134,10 +138,10 @@ jobs:
 
         echo "Building images"
         # docker-buildx bake --progress plain -f docker-compose.yml -f buildx.yml
-        docker-buildx bake -f docker-compose.yml -f buildx.yml
+        docker-buildx bake --set target.cache-to=type=inline -f docker-compose.yml -f buildx.yml
 
         echo "Building images that depend on the previous stage"
-        docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml
+        docker-buildx bake --set target.cache-to=type=inline  -f docker-compose.stage-2.yml -f buildx.stage-2.yml
 
         echo "Show tagged images"
         docker images
