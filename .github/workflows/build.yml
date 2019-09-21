@@ -101,10 +101,11 @@ jobs:
           # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
           # chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
         ## binaries built from master
-          curl --silent --location ${BUILDC_URL} > ~/.docker/cli-plugins/gh-buildx.zip
-          unzip -j ~/.docker/cli-plugins/gh-buildx.zip
-          mv -v ~/.docker/cli-plugins/buildx* ~/.docker/cli-plugins/docker-buildx
-          chmod -vv a+x ~/.docker/cli-plugins/docker-buildx
+          cd ~/.docker/cli-plugins/
+          curl --silent --location ${BUILDC_URL} > gh-buildx.zip
+          unzip -j gh-buildx.zip
+          mv -v buildx* docker-buildx
+          chmod -vv a+x docker-buildx
         ### build from source
           # docker build --platform=local -o . git://github.com/docker/buildx
           # mv -v buildx ~/.docker/cli-plugins/docker-buildx
