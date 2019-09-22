@@ -81,15 +81,15 @@ jobs:
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
 
-    - name: Upload Docker images
-      env:
-        LLB: docker-build
-        # INVOCATION_ID: ${{ INVOCATION_ID }}
-      uses: docker://docker/compose:1.25.0-rc2
-      volumes:
-        - /home/runner/.docker/config.json:/root/.docker/config.json
-      with:
-        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
+    # - name: Upload Docker images
+    #   env:
+    #     LLB: docker-build
+    #     # INVOCATION_ID: ${{ INVOCATION_ID }}
+    #   uses: docker://docker/compose:1.25.0-rc2
+    #   volumes:
+    #     - /home/runner/.docker/config.json:/root/.docker/config.json
+    #   with:
+    #     args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
 
 
 
