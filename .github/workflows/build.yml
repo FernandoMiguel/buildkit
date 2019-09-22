@@ -88,8 +88,8 @@ jobs:
       uses: docker://docker/compose:1.25.0-rc2
       with:
         args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
-      volumes:
-        - /home/runner/.docker/config.json:/root/.docker/config.json
+        volumes:
+          - /home/runner/.docker/config.json:/root/.docker/config.json
 
 
 
