@@ -58,159 +58,159 @@ jobs:
       with:
         args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
 
-  #   - name: Building images
-  #     env:
-  #       LLB: docker-build
-  #       # INVOCATION_ID: ${{ INVOCATION_ID }}
-  #     uses: docker://docker/compose:1.25.0-rc2
-  #     with:
-  #       args: docker-compose build --parallel
+    - name: Building images
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose build --parallel
 
-  #   - name: Building images that depend on the previous stage
-  #     env:
-  #       LLB: docker-build
-  #       # INVOCATION_ID: ${{ INVOCATION_ID }}
-  #     uses: docker://docker/compose:1.25.0-rc2
-  #     with:
-  #       args: docker-compose -f docker-compose.stage-2.yml build --parallel
+    - name: Building images that depend on the previous stage
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose -f docker-compose.stage-2.yml build --parallel
 
-  #   - name: Show tagged images
-  #     run: docker images
+    - name: Show tagged images
+      run: docker images
 
-  #   # - name: Docker login
-  #   #   run: |
-  #   #     docker login -p -q docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
+    # - name: Docker login
+    #   run: |
+    #     docker login -p -q docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
 
-  #   # - name: Push Docker images
-  #   #   env:
-  #   #     LLB: docker-build
-  #   #     # INVOCATION_ID: ${{ INVOCATION_ID }}
-  #   #   uses: docker://docker/compose:1.25.0-rc2
-  #   #   volumes:
-  #   #     - /home/runner/.docker/config.json:/root/.docker/config.json
-  #   #   with:
-  #   #     args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
-
-
+    # - name: Push Docker images
+    #   env:
+    #     LLB: docker-build
+    #     # INVOCATION_ID: ${{ INVOCATION_ID }}
+    #   uses: docker://docker/compose:1.25.0-rc2
+    #   volumes:
+    #     - /home/runner/.docker/config.json:/root/.docker/config.json
+    #   with:
+    #     args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
 
 
-  # build-buildx:
-  #   name: Build with Buildx bake
-  #   runs-on: ubuntu-latest
 
-  #   steps:
 
-  #   - name: install buildx
-  #     env:
-  #       BUILDX_VER: v0.3.0
-  #       BUILDC_URL: https://github.com/FernandoMiguel/buildx/suites/233680061/artifacts/46356
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #     run: |
-  #       docker version
-  #       docker info
-  #       mkdir -vp \
-  #         ~/.docker/cli-plugins/ \
-  #         ~/dockercache
-  #       export PATH=~/.docker/cli-plugins/:$PATH
-  #       ### install binaries
-  #         # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
-  #         # chmod -v a+x ~/.docker/cli-plugins/docker-buildx
-  #       ## binaries built from master
-  #         cd ~/.docker/cli-plugins/
-  #         curl --silent --location ${BUILDC_URL} > gh-buildx.zip
-  #         unzip -j gh-buildx.zip
-  #         mv -v buildx* docker-buildx
-  #         chmod -v a+x docker-buildx
-  #       ### build from source
-  #         # docker build --platform=local -o . git://github.com/docker/buildx
-  #         # mv -v buildx ~/.docker/cli-plugins/docker-buildx
-  #         # chmod -v a+x ~/.docker/cli-plugins/docker-buildx
+  build-buildx:
+    name: Build with Buildx bake
+    runs-on: ubuntu-latest
 
-  #   - name: create docker-container
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #     run: |
-  #       export PATH=~/.docker/cli-plugins/:$PATH
-  #       # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
-  #       # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
-  #       # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
-  #       # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-gc=false --load --cache-to=type=local,dest=~/dockercache'  ##  export docker layers cache
-  #       docker-buildx ls
+    steps:
 
-  #   - name: checkout
-  #     uses: actions/checkout@v1
-  #     with:
-  #       fetch-depth: 1
+    - name: install buildx
+      env:
+        BUILDX_VER: v0.3.0
+        BUILDC_URL: https://github.com/FernandoMiguel/buildx/suites/233680061/artifacts/46356
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+      run: |
+        docker version
+        docker info
+        mkdir -vp \
+          ~/.docker/cli-plugins/ \
+          ~/dockercache
+        export PATH=~/.docker/cli-plugins/:$PATH
+        ### install binaries
+          # curl --silent -L https://github.com/docker/buildx/releases/download/"$BUILDX_VER"/buildx-"$BUILDX_VER".linux-amd64 > ~/.docker/cli-plugins/docker-buildx
+          # chmod -v a+x ~/.docker/cli-plugins/docker-buildx
+        ## binaries built from master
+          cd ~/.docker/cli-plugins/
+          curl --silent --location ${BUILDC_URL} > gh-buildx.zip
+          unzip -j gh-buildx.zip
+          mv -v buildx* docker-buildx
+          chmod -v a+x docker-buildx
+        ### build from source
+          # docker build --platform=local -o . git://github.com/docker/buildx
+          # mv -v buildx ~/.docker/cli-plugins/docker-buildx
+          # chmod -v a+x ~/.docker/cli-plugins/docker-buildx
 
-  #   - name: buildx bake print
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #       LLB: buildkit
-  #     run: |
-  #       export PATH=~/.docker/cli-plugins/:$PATH
+    - name: create docker-container
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+      run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
+        # docker-buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
+        # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
+        # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
+        # docker-buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-gc=false --load --cache-to=type=local,dest=~/dockercache'  ##  export docker layers cache
+        docker-buildx ls
 
-  #       echo "Show images to be built"
-  #       docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
-  #       docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
+    - name: checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
 
-  #   - name: buildx bake
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #       LLB: buildkit
-  #     run: |
-  #       export PATH=~/.docker/cli-plugins/:$PATH
+    - name: buildx bake print
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
 
-  #       echo "Building images"
-  #       docker-buildx bake -f docker-compose.yml -f buildx.yml -f buildx.hcl
+        echo "Show images to be built"
+        docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
+        docker-buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
 
-  #       echo "Building images that depend on the previous stage"
-  #       docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml -f buildx.stage-2.hcl
+    - name: buildx bake
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
 
-  #       # echo "Show Docker layer cache"
-  #       # ls -lahtr ~/dockercache/
+        echo "Building images"
+        docker-buildx bake -f docker-compose.yml -f buildx.yml -f buildx.hcl
 
-  #   - name: Show tagged images
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #       LLB: buildkit
-  #     run: |
-  #       export PATH=~/.docker/cli-plugins/:$PATH
+        echo "Building images that depend on the previous stage"
+        docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml -f buildx.stage-2.hcl
 
-  #       echo "Show tagged images"
-  #       docker images
+        # echo "Show Docker layer cache"
+        # ls -lahtr ~/dockercache/
 
-  #   - name: Docker login
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #       LLB: buildkit
-  #     run: |
-  #       docker login -p -q docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
-  #       docker login -p -q --username fernandomiguel --password ${{ secrets.DOCKER_HUB_TOKEN }}
+    - name: Show tagged images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
 
-  #   - name: Push Docker images
-  #     env:
-  #       DOCKER_CLI_EXPERIMENTAL: enabled
-  #       DOCKER_BUILDKIT: 1
-  #       LLB: buildkit
-  #     run: |
-  #       docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
+        echo "Show tagged images"
+        docker images
 
-  #   # - name: buildx inspect
-  #   #   continue-on-error: true
-  #   #   env:
-  #   #     DOCKER_CLI_EXPERIMENTAL: enabled
-  #   #     DOCKER_BUILDKIT: 1
-  #   #     LLB: buildkit
-  #   #   run: |
-  #   #     export PATH=~/.docker/cli-plugins/:$PATH
-  #   #     echo "buildx inspect"
-  #   #     docker-buildx imagetools inspect docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
+    - name: Docker login
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        docker login -p -q docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
+        docker login -p -q --username fernandomiguel --password ${{ secrets.DOCKER_HUB_TOKEN }}
 
-  #   #     echo "buildx inspect raw"
-  #   #     docker-buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
+    - name: Push Docker images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
+
+    # - name: buildx inspect
+    #   continue-on-error: true
+    #   env:
+    #     DOCKER_CLI_EXPERIMENTAL: enabled
+    #     DOCKER_BUILDKIT: 1
+    #     LLB: buildkit
+    #   run: |
+    #     export PATH=~/.docker/cli-plugins/:$PATH
+    #     echo "buildx inspect"
+    #     docker-buildx imagetools inspect docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
+
+    #     echo "buildx inspect raw"
+    #     docker-buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
