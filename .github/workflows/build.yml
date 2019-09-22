@@ -184,7 +184,7 @@ jobs:
         echo "Show tagged images"
         docker images
 
-    - name: Push Docker images
+    - name: Docker login
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_BUILDKIT: 1
@@ -192,6 +192,13 @@ jobs:
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
         docker login --username fernandomiguel --password ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Push Docker images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
 
     # - name: buildx inspect
