@@ -81,7 +81,7 @@ jobs:
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
 
-    - name: upload Docker image
+    - name: Upload Docker images
       env:
         LLB: docker-build
         # INVOCATION_ID: ${{ github.INVOCATION_ID }}
@@ -178,12 +178,12 @@ jobs:
         docker images
 
         echo "buildx inspect"
-        docker-buildx imagetools inspect docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
+        docker-buildx imagetools inspect docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
         echo "buildx inspect raw"
-        docker-buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
+        docker-buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/buildkit/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
-    - name: upload Docker image
+    - name: Upload Docker images
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
