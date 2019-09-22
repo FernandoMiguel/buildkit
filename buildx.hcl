@@ -7,10 +7,13 @@ target "cache" {
 }
 
 target "php73" {
-	inherits = ["cache"]
+	inherits = ["cache"],
+	tags = [
+		"docker.pkg.github.com/fernandomiguel/buildkit/php:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}",
+		"fernandomiguel/php:/php:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}"
+	]
 }
 
 target "nginx-base" {
 	inherits = ["cache"]
 }
-
