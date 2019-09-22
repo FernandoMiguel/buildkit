@@ -77,6 +77,19 @@ jobs:
     - name: Show tagged images
       run: docker images
 
+    - name: Docker login
+      run: |
+        docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
+
+    - name: upload Docker image
+      env:
+        LLB: docker-build
+        # INVOCATION_ID: ${{ github.INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc2
+      with:
+        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml push
+
+
 
   build-buildx:
     name: Build with Buildx bake
@@ -152,6 +165,9 @@ jobs:
         echo "Building images that depend on the previous stage"
         docker-buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml -f buildx.stage-2.hcl
 
+        # echo "Show Docker layer cache"
+        # ls -lahtr ~/dockercache/
+
     - name: Show tagged images
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
@@ -162,10 +178,12 @@ jobs:
         docker images
 
         echo "buildx inspect"
-        docker buildx imagetools inspect docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-buildkit-${GITHUB_SHA}-${INVOCATION_ID}
+        docker-buildx imagetools inspect docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
         echo "buildx inspect raw"
-        docker buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-buildkit-${GITHUB_SHA}-${INVOCATION_ID}
+        docker-buildx imagetools inspect --raw docker.pkg.github.com/fernandomiguel/nginx-base/nginx-base:release-${LLB}-${GITHUB_SHA}-${INVOCATION_ID}
 
-        # echo "Show Docker layer cache"
-        # ls -lahtr ~/dockercache/
+    - name: upload Docker image
+      run: |
+        docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
+        docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
