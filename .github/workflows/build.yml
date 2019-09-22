@@ -159,6 +159,7 @@ jobs:
         LLB: buildkit
       run: |
         export PATH=~/.docker/cli-plugins/:$PATH
+
         echo "Building images"
         docker-buildx bake -f docker-compose.yml -f buildx.yml -f buildx.hcl
 
@@ -174,6 +175,8 @@ jobs:
         DOCKER_BUILDKIT: 1
         LLB: buildkit
       run: |
+        export PATH=~/.docker/cli-plugins/:$PATH
+
         echo "Show tagged images"
         docker images
 
