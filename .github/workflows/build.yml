@@ -81,7 +81,7 @@ jobs:
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
 
-    # - name: Upload Docker images
+    # - name: Push Docker images
     #   env:
     #     LLB: docker-build
     #     # INVOCATION_ID: ${{ INVOCATION_ID }}
@@ -183,7 +183,11 @@ jobs:
         echo "Show tagged images"
         docker images
 
-    - name: Upload Docker images
+    - name: Push Docker images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
       run: |
         docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml push
