@@ -3,7 +3,7 @@ group "default" {
 }
 
 target "cache" {
-  cache-to = ["type=inline","mode=max"]
+  cache-to = ["type=inline,mode=max"]
 }
 
 target "php73" {
