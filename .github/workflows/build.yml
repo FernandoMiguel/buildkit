@@ -56,7 +56,7 @@ jobs:
     - name: printenv
       env:
         LLB: docker-build
-        INVOCATION_ID: ${{ INVOCATION_ID }}
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
         FOOBAR: HELLO
       uses: docker://docker/compose:1.25.0-rc2
       with:
