@@ -77,9 +77,9 @@ jobs:
     - name: Show tagged images
       run: docker images
 
-    - name: Docker login
-      run: |
-        docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
+    # - name: Docker login
+    #   run: |
+    #     docker login docker.pkg.github.com --username fernandomiguel --password ${{ secrets.PACKAGES_TOKEN }}
 
     # - name: Push Docker images
     #   env:
