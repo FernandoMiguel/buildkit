@@ -3,50 +3,39 @@ name: Build Docker images (SH)
 on: [push]
 
 jobs:
-  build-docker-compose-image:
-    name: Build with docker-compose image (SH)
+  build-docker-compose:
+    name: Build with docker-compose (SH)
     runs-on: self-hosted
 
     steps:
-    - name: docker version (SH)
-      uses: docker://docker/compose:1.25.0-rc4
-      with:
-        args: docker version
+    - name: compose dependencies (SH)
+      run: |
+        docker-compose version
+        docker version
+        docker info
 
     - name: checkout (SH)
       uses: actions/checkout@master
       with:
         fetch-depth: 1
 
-    - name: docker-compose config (SH)
+    - name: docker-compose build (SH)
       env:
         LLB: docker-build
         COMPOSE_DOCKER_CLI_BUILD: 1
-        # INVOCATION_ID: ${{ INVOCATION_ID }}
-      uses: docker://docker/compose:1.25.0-rc4
-      with:
-        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
+        INVOCATION_ID: ${{ INVOCATION_ID }}
+      run: |
+        echo "Show images to be built"
+        docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
 
-    - name: Building images (SH)
-      env:
-        LLB: docker-build
-        COMPOSE_DOCKER_CLI_BUILD: 1
-        # INVOCATION_ID: ${{ INVOCATION_ID }}
-      uses: docker://docker/compose:1.25.0-rc4
-      with:
-        args: docker-compose build --parallel
+        echo "Building images"
+        docker-compose build --parallel
 
-    - name: Building images that depend on the previous stage (SH)
-      env:
-        LLB: docker-build
-        COMPOSE_DOCKER_CLI_BUILD: 1
-        # INVOCATION_ID: ${{ INVOCATION_ID }}
-      uses: docker://docker/compose:1.25.0-rc4
-      with:
-        args: docker-compose -f docker-compose.stage-2.yml build --parallel
+        echo "Building images that depend on the previous stage"
+        docker-compose -f docker-compose.stage-2.yml build --parallel
 
-    - name: Show tagged images
-      run: docker images
+        echo "Show tagged images"
+        docker images
 
 
   build-buildx:
