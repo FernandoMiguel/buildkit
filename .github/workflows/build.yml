@@ -102,7 +102,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: install buildx
       env:
         BUILDX_VER: v0.3.1
@@ -112,6 +111,7 @@ jobs:
       run: |
         docker version
         docker info
+        printenv
         mkdir -vp \
           ~/.docker/cli-plugins/ \
           ~/dockercache
@@ -127,6 +127,7 @@ jobs:
           # docker build --platform=local -o . git://github.com/docker/buildx
           # mv -v buildx ~/.docker/cli-plugins/docker-buildx
         chmod -v a+x ~/.docker/cli-plugins/docker-buildx
+        docker plugin ls
 
     - name: create docker-container
       env:

@@ -13,6 +13,8 @@ jobs:
         docker-compose version
         docker version
         docker info
+        docker plugin ls
+        printenv
 
     - name: checkout (SH)
       uses: actions/checkout@master
@@ -23,7 +25,6 @@ jobs:
       env:
         LLB: docker-build
         COMPOSE_DOCKER_CLI_BUILD: 1
-        INVOCATION_ID: ${{ INVOCATION_ID }}
       run: |
         echo "Show images to be built"
         docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
@@ -50,6 +51,8 @@ jobs:
       run: |
         docker version
         docker info
+        docker plugin ls
+        printenv
 
     - name: create docker-container (SH)
       env:
