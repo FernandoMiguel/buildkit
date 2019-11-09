@@ -1,0 +1,110 @@
+name: Build Docker images (SH)
+
+on: [push]
+
+jobs:
+  build-docker-compose-image:
+    name: Build with docker-compose image (SH)
+    runs-on: self-hosted
+
+    steps:
+    - name: docker version (SH)
+      uses: docker://docker/compose:1.25.0-rc4
+      with:
+        args: docker version
+
+    - name: checkout (SH)
+      uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+
+    - name: docker-compose config (SH)
+      env:
+        LLB: docker-build
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc4
+      with:
+        args: docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml config
+
+    - name: Building images (SH)
+      env:
+        LLB: docker-build
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc4
+      with:
+        args: docker-compose build --parallel
+
+    - name: Building images that depend on the previous stage (SH)
+      env:
+        LLB: docker-build
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        # INVOCATION_ID: ${{ INVOCATION_ID }}
+      uses: docker://docker/compose:1.25.0-rc4
+      with:
+        args: docker-compose -f docker-compose.stage-2.yml build --parallel
+
+    - name: Show tagged images
+      run: docker images
+
+
+  build-buildx:
+    name: Build with Buildx bake (SH)
+    runs-on: self-hosted
+
+    steps:
+    - name: install buildx (SH)
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+      run: |
+        docker version
+        docker info
+
+    - name: create docker-container (SH)
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+      run: |
+        # docker buildx create --use --buildkitd-flags '--oci-worker-gc=false'  ##  disable GC
+        # docker buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master  ##  use buildkit image built from latest master
+        # docker buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--load'  ##  load the single-platform build result to docker images
+        # docker buildx create --use --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-gc=false --load --cache-to=type=local,dest=~/dockercache'  ##  export docker layers cache
+        docker buildx ls
+
+    - name: checkout (SH)
+      uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+
+    - name: buildx bake print (SH)
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        echo "Show images to be built"
+        docker-compose -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml config
+        docker buildx bake -f docker-compose.yml -f docker-compose.stage-2.yml -f buildx.yml -f buildx.stage-2.yml -f buildx.hcl -f buildx.stage-2.hcl --print
+
+    - name: buildx bake (SH)
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        echo "Building images"
+        docker buildx bake -f docker-compose.yml -f buildx.yml -f buildx.hcl
+
+        echo "Building images that depend on the previous stage"
+        docker buildx bake -f docker-compose.stage-2.yml -f buildx.stage-2.yml -f buildx.stage-2.hcl
+
+    - name: Show tagged images (SH)
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_BUILDKIT: 1
+        LLB: buildkit
+      run: |
+        echo "Show tagged images"
+        docker images
